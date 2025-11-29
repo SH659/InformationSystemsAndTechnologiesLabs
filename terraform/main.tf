@@ -108,6 +108,21 @@ resource "aws_security_group" "app" {
   }
 }
 
+# Elastic IP
+resource "aws_eip" "app" {
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.project_name}-eip"
+  }
+}
+
+# Elastic IP Association
+resource "aws_eip_association" "app" {
+  instance_id   = aws_instance.app.id
+  allocation_id = aws_eip.app.id
+}
+
 # EC2 Instance
 resource "aws_instance" "app" {
   ami           = data.aws_ami.ubuntu.id

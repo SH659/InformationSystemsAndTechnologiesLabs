@@ -3,6 +3,11 @@ output "instance_id" {
   value       = aws_instance.app.id
 }
 
+output "elastic_ip" {
+  description = "Static Elastic IP address"
+  value       = aws_eip.app.public_ip
+}
+
 output "instance_public_ip" {
   description = "Public IP address of the EC2 instance"
   value       = aws_instance.app.public_ip
