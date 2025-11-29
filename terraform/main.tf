@@ -133,9 +133,13 @@ resource "aws_instance" "app" {
               git clone https://github.com/SH659/InformationSystemsAndTechnologiesLabs.git app
               cd app
 
-              # Build and run the Docker container
+              # Build and run the Docker container with environment variable
               docker build -t meme-commenter .
-              docker run -d -p 80:8000 --name meme-app --restart unless-stopped meme-commenter
+              docker run -d -p 80:8000 \
+                -e GEMINI_API_KEY="${var.gemini_api_key}" \
+                --name meme-app \
+                --restart unless-stopped \
+                meme-commenter
 
               # Set ownership
               chown -R ubuntu:ubuntu /home/ubuntu/app

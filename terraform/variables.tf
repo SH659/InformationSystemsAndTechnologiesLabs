@@ -15,3 +15,9 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "gemini_api_key" {
+  description = "Gemini API Key for the application"
+  type        = string
+  sensitive   = true
+}
