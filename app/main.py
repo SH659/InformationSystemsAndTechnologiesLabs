@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str
 
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
 
 
 settings = Settings()
@@ -21,8 +21,8 @@ genai.configure(api_key=settings.GEMINI_API_KEY)
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="."), name="static")
+templates = Jinja2Templates(directory=".")
 
 
 class CodeRequest(BaseModel):
