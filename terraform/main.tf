@@ -138,26 +138,30 @@ resource "aws_instance" "app" {
 
               # Update and install dependencies
               apt-get update
-              apt-get install -y docker.io git
+              apt-get install -y docker.io
               systemctl start docker
               systemctl enable docker
               usermod -aG docker ubuntu
 
-              # Clone the repository
-              cd /home/ubuntu
-              git clone https://github.com/SH659/InformationSystemsAndTechnologiesLabs.git app
-              cd app
+              # Wait for docker to be ready
+              sleep 10
 
-              # Build and run the Docker container with environment variable
-              docker build -t meme-commenter .
+              # Pull and run the application from Docker Hub
+              docker pull ${var.docker_image}:main
               docker run -d -p 80:8000 \
                 -e GEMINI_API_KEY="${var.gemini_api_key}" \
                 --name meme-app \
                 --restart unless-stopped \
-                meme-commenter
+                ${var.docker_image}:main
 
-              # Set ownership
-              chown -R ubuntu:ubuntu /home/ubuntu/app
+              # Run Watchtower to auto-update the container
+              docker run -d \
+                --name watchtower \
+                -v /var/run/docker.sock:/var/run/docker.sock \
+                --restart unless-stopped \
+                containrrr/watchtower \
+                --interval 30 \
+                meme-app
               EOF
 
   tags = {

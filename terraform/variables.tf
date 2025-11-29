@@ -21,3 +21,13 @@ variable "gemini_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "docker_username" {
+  description = "Docker Hub username"
+  type        = string
+}
+
+variable "docker_image" {
+  description = "Docker image name (e.g., username/meme-commenter)"
+  type        = string
+}
