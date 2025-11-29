@@ -113,16 +113,32 @@ resource "aws_instance" "app" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   subnet_id     = aws_subnet.public.id
+  key_name      = "information_systems_labs"
 
   vpc_security_group_ids = [aws_security_group.app.id]
 
   user_data = <<-EOF
               #!/bin/bash
+              set -e
+
+              # Update and install dependencies
               apt-get update
-              apt-get install -y docker.io
+              apt-get install -y docker.io git
               systemctl start docker
               systemctl enable docker
               usermod -aG docker ubuntu
+
+              # Clone the repository
+              cd /home/ubuntu
+              git clone https://github.com/SH659/InformationSystemsAndTechnologiesLabs.git app
+              cd app
+
+              # Build and run the Docker container
+              docker build -t meme-commenter .
+              docker run -d -p 80:8000 --name meme-app --restart unless-stopped meme-commenter
+
+              # Set ownership
+              chown -R ubuntu:ubuntu /home/ubuntu/app
               EOF
 
   tags = {
